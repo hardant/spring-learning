@@ -6,9 +6,13 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.lang.annotation.Annotation;
 
 public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentResolver {
+    /**
+     * 此方法确定当前参数是否需要处理
+     * @param parameter
+     * @return
+     */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         if (parameter.hasParameterAnnotation(UserAnnotation.class)) {
@@ -18,6 +22,15 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
         }
     }
 
+    /**
+     * 此方法是对参数的处理结果，返回值将被赋值给handler method的对应参数
+     * @param parameter
+     * @param mavContainer
+     * @param webRequest
+     * @param binderFactory
+     * @return
+     * @throws Exception
+     */
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         User user = new User();

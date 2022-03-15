@@ -14,7 +14,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(currentUserMethodArgumentResolver());
-        System.out.println("111111111");
         super.addArgumentResolvers(argumentResolvers);
     }
 
