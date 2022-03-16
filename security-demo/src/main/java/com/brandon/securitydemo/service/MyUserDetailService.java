@@ -1,14 +1,15 @@
 package com.brandon.securitydemo.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.brandon.securitydemo.entity.User;
+import com.brandon.securitydemo.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,15 +17,20 @@ import java.util.List;
 @Service("userDetailsService")
 public class MyUserDetailService implements UserDetailsService {
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if("Mary".equals(username)) {
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
 
-            String password = passwordEncoder.encode("123");
-            List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList("User,Admin");
-            return new User("Mary", password, auths);
+        wrapper.eq("username", username);
+
+        User user = userMapper.selectOne(wrapper);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
         }
-        return null;
+        List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("role");
+        return new org.springframework.security.core.userdetails.User(username, new BCryptPasswordEncoder().encode(user.getPassword()), authorities);
     }
 }
