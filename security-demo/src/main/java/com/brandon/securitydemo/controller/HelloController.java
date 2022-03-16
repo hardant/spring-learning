@@ -17,4 +17,9 @@ public class HelloController {
     public String index() {
         return "hello index";
     }
+
+    @GetMapping("/sales")
+    public String sales() {
+        return "hello sales";
+    }
 }

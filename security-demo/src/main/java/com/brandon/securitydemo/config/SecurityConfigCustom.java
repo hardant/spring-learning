@@ -44,11 +44,13 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/test/index") // 登陆成功后，跳转路径
                 .and().authorizeRequests()
                     // 允许下面的路径访问。不进行用户/权限认证
-                    .antMatchers("/", "/test/hello", "/user/login.html", "/login.html").permitAll()
-                .anyRequest().authenticated() // 其他的要进行用户认证
-
+                    .antMatchers("/", "/test/hello", "/login.html").permitAll()
+                    // 有管理员权限才可以访问
+                    .antMatchers("/test/index").hasAuthority("admins")
+                    .antMatchers("/test/sales").hasRole("sales")
+                    .anyRequest().authenticated() // 其他的要进行用户认证
                 .and().csrf().disable();// 关闭csrf
-
+        http.exceptionHandling().accessDeniedPage("/unauthorized.html");
     }
 
     /**

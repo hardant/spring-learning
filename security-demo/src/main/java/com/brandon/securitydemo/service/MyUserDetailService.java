@@ -30,7 +30,7 @@ public class MyUserDetailService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("role");
+        List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("admins,ROLE_sales1");
         return new org.springframework.security.core.userdetails.User(username, new BCryptPasswordEncoder().encode(user.getPassword()), authorities);
     }
 }
