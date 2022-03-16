@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration
 public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
+    /*
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -22,7 +23,6 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(createPasswordEncoder());
     }
-    /*
     @Override
     protected UserDetailsService userDetailsService() {
         return userDetailsService;
@@ -35,7 +35,7 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
      * 原因是这个encoder对象没有被注册到spring容器中。登陆过程中找不到对应的bean进行加密验证
      * @return
      */
-    //@Bean
+    @Bean
     PasswordEncoder createPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
