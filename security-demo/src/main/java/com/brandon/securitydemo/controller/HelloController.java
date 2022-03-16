@@ -12,4 +12,9 @@ public class HelloController {
     public String Hello() {
         return "Hello Spring Security";
     }
+
+    @GetMapping("/index")
+    public String index() {
+        return "hello index";
+    }
 }
