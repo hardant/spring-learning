@@ -67,7 +67,7 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
         http.formLogin() //自定义自己编写的登陆页面
                 .loginPage("/login.html") // 登陆访问页面
                 .loginProcessingUrl("/user/login") // 登陆访问路径 这个接口不需要自己写。只是让框架配置
-                .defaultSuccessUrl("/test/index") // 登陆成功后，跳转路径
+                .defaultSuccessUrl("/loginSuccess.html") // 登陆成功后，跳转路径
                 .and().authorizeRequests()
                     // 允许下面的路径访问。不进行用户/权限认证
                     .antMatchers("/", "/test/hello", "/login.html").permitAll()
@@ -82,6 +82,8 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
                     .userDetailsService(userDetailsService)
                 .and().csrf().disable();// 关闭csrf
         http.exceptionHandling().accessDeniedPage("/unauthorized.html");
+
+        http.logout().logoutUrl("/logout").logoutSuccessUrl("/login.html");
     }
 
     /**
