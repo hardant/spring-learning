@@ -9,12 +9,38 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 /**
  * 用自定义UserDetailsService实现类的方式只需要想spring容器注册一个UserDetailsService类的bean就可以了
  */
 @Configuration
 public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
+
+    private final DataSource dataSource;
+    private UserDetailsService userDetailsService;
+
+    public SecurityConfigCustom(DataSource dataSource, UserDetailsService userDetailsService) {
+        this.dataSource = dataSource;
+        this.userDetailsService = userDetailsService;
+    }
+
+
+    /**
+     * 配置token持久化库
+     * @return
+     */
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        // 这个配置智能执行一次，二次执行会因为数据表已经存在二报错
+        //jdbcTokenRepository.setCreateTableOnStartup(true);
+        return jdbcTokenRepository;
+    }
     /*
     @Autowired
     private UserDetailsService userDetailsService;
@@ -49,6 +75,11 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
                     .antMatchers("/test/index").hasAuthority("admins")
                     .antMatchers("/test/sales").hasRole("sales")
                     .anyRequest().authenticated() // 其他的要进行用户认证
+                .and()
+                    .rememberMe()
+                    .tokenRepository(persistentTokenRepository())
+                    .tokenValiditySeconds(60)
+                    .userDetailsService(userDetailsService)
                 .and().csrf().disable();// 关闭csrf
         http.exceptionHandling().accessDeniedPage("/unauthorized.html");
     }

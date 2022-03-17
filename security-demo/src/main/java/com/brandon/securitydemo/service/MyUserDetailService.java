@@ -17,8 +17,15 @@ import java.util.List;
 @Service("userDetailsService")
 public class MyUserDetailService implements UserDetailsService {
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+
+    /**
+     * 构造方法注入可以省略@Autowired注释，容器自动注入
+     * @param userMapper
+     */
+    public MyUserDetailService(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
