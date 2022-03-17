@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +21,7 @@ import javax.sql.DataSource;
  * 用自定义UserDetailsService实现类的方式只需要想spring容器注册一个UserDetailsService类的bean就可以了
  */
 @Configuration
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
@@ -72,7 +76,7 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
                     // 允许下面的路径访问。不进行用户/权限认证
                     .antMatchers("/", "/test/hello", "/login.html").permitAll()
                     // 有管理员权限才可以访问
-                    .antMatchers("/test/index").hasAuthority("admins")
+                    //.antMatchers("/test/index").hasAuthority("admins")
                     .antMatchers("/test/sales").hasRole("sales")
                     .anyRequest().authenticated() // 其他的要进行用户认证
                 .and()
