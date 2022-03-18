@@ -69,13 +69,14 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin() //自定义自己编写的登陆页面
-                .loginPage("/login.html") // 登陆访问页面
+                .loginPage("/login") // 登陆访问页面
                 .loginProcessingUrl("/user/login") // 登陆访问路径 这个接口不需要自己写。只是让框架配置
                 .defaultSuccessUrl("/loginSuccess.html") // 登陆成功后，跳转路径
                 .and().authorizeRequests()
                     // 允许下面的路径访问。不进行用户/权限认证
-                    .antMatchers("/", "/test/hello", "/login.html").permitAll()
-                    // 有管理员权限才可以访问
+                    .antMatchers("/", "/test/hello", "/login").permitAll()
+                    // 有管理员权限才
+                // 可以访问
                     //.antMatchers("/test/index").hasAuthority("admins")
                     .antMatchers("/test/sales").hasRole("sales")
                     .anyRequest().authenticated() // 其他的要进行用户认证
@@ -83,8 +84,8 @@ public class SecurityConfigCustom extends WebSecurityConfigurerAdapter {
                     .rememberMe()
                     .tokenRepository(persistentTokenRepository())
                     .tokenValiditySeconds(60)
-                    .userDetailsService(userDetailsService)
-                .and().csrf().disable();// 关闭csrf
+                    .userDetailsService(userDetailsService);
+        //http.csrf().disable();
         http.exceptionHandling().accessDeniedPage("/unauthorized.html");
 
         http.logout().logoutUrl("/logout").logoutSuccessUrl("/login.html");
